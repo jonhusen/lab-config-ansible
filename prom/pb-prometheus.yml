@@ -1,0 +1,26 @@
+---
+- hosts: docker
+
+  handlers:
+    - name: Restart prometheus container.
+      docker_container:
+        name: prometheus
+        image: prom/prometheus
+        state: started
+        restart: yes
+
+  tasks:
+    - name: Copy prometheus config to docker host.
+      copy:
+        src: prometheus.yml
+        dest: ~/prometheus.yml
+      notify: Restart prometheus container.
+
+    - name: Start prometheus container
+      docker_container:
+        name: prometheus
+        image: prom/prometheus:latest
+        detach: yes
+        ports: "9090:9090"
+        volumes: "~/prometheus.yml:/etc/prometheus/prometheus.yml"
+        state: started
