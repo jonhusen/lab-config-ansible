@@ -1,0 +1,24 @@
+---
+- hosts: docker
+
+  handlers:
+    - name: Restart grafana container.
+      docker_container:
+        name: grafana
+        image: grafana/grafana
+        state: started
+        restart: yes
+
+  tasks:
+    # - name: Copy grafana config to docker host.
+    #   copy: src=grafana.ini dest=~/grafana.ini
+    #   notify: Restart grafana container.
+
+    - name: Install grafana container.
+      docker_container:
+        name: grafana
+        image: grafana/grafana
+        detach: yes
+        ports: "3000:3000"
+        # volumes: "~/grafana.ini:/etc/grafana/grafana.ini"
+        state: started
